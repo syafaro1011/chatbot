@@ -1,0 +1,20 @@
+{
+  "produk": [
+    {
+      "id": "KRK001",
+      "nama": "Kerupuk Bawang",
+      "kategori": "Makanan Ringan",
+      "harga": 8000,
+      "stok": 25,
+      "deskripsi": "Kerupuk bawang gurih renyah buatan rumahan."
+    },
+    {
+      "id": "KRK002",
+      "nama": "Keripik Pedas",
+      "kategori": "Makanan Ringan",
+      "harga": 10000,
+      "stok": 12,
+      "deskripsi": "Keripik pedas dengan level pedas pilihan."
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UMKM</title>
+    <link rel="stylesheet" href="/web/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-content">
+                <div class="bot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="header-info">
+                    <h2>Asisten UMKM</h2>
+                    <p class="status">
+                        <span class="status-indicator"></span>
+                        Online
+                    </p>
+                </div>
+            </div>
+            <button class="btn-menu" onclick="toggleMenu()">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+
+        <!-- Chatbox -->
+        <div id="chatbox" class="chatbox">
+            <div class="welcome-message">
+                <div class="welcome-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3>Selamat Datang! 👋</h3>
+                <p>Saya adalah asisten virtual UMKM. Silakan tanyakan tentang produk, harga, atau informasi lainnya.</p>
+                <div class="quick-questions">
+                    <button class="quick-btn" onclick="kirimCepat('Produk apa saja yang tersedia?')">
+                        <i class="fas fa-box"></i> Lihat Produk
+                    </button>
+                    <button class="quick-btn" onclick="kirimCepat('Bagaimana cara order?')">
+                        <i class="fas fa-shopping-cart"></i> Cara Order
+                    </button>
+                    <button class="quick-btn" onclick="kirimCepat('Jam operasional?')">
+                        <i class="fas fa-clock"></i> Jam Buka
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="typing-indicator" style="display: none;">
+            <div class="msg-bot">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <button class="btn-attach" title="Lampiran">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <input type="text" id="message" placeholder="Ketik pesan Anda di sini..." 
+                   onkeypress="handleKeyPress(event)">
+            <button class="btn-send" onclick="kirim()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Menu Dropdown -->
+    <div id="menu-dropdown" class="menu-dropdown">
+        <button onclick="clearChat()">
+            <i class="fas fa-trash"></i> Hapus Percakapan
+        </button>
+        <button onclick="downloadChat()">
+            <i class="fas fa-download"></i> Unduh Chat
+        </button>
+    </div>
+
+    <script>
+        let messageCount = 0;
+
+        function tampilkan(pesan, sender) {
+            let box = document.getElementById("chatbox");
+            
+            // Hide welcome message on first interaction
+            if (messageCount === 0) {
+                const welcome = box.querySelector('.welcome-message');
+                if (welcome) welcome.style.display = 'none';
+            }
+            
+            let messageDiv = document.createElement("div");
+            messageDiv.className = sender === "user" ? "msg-user" : "msg-bot";
+            
+            if (sender === "bot") {
+                let avatar = document.createElement("div");
+                avatar.className = "message-avatar";
+                avatar.innerHTML = '<i class="fas fa-robot"></i>';
+                messageDiv.appendChild(avatar);
+            }
+            
+            let contentDiv = document.createElement("div");
+            contentDiv.className = "message-content";
+            contentDiv.textContent = pesan;
+            messageDiv.appendChild(contentDiv);
+            
+            let timeDiv = document.createElement("div");
+            timeDiv.className = "message-time";
+            timeDiv.textContent = new Date().toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            messageDiv.appendChild(timeDiv);
+            
+            box.appendChild(messageDiv);
+            box.scrollTop = box.scrollHeight;
+            
+            messageCount++;
+        }
+
+        function showTyping() {
+            document.getElementById("typing-indicator").style.display = "block";
+            let box = document.getElementById("chatbox");
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function hideTyping() {
+            document.getElementById("typing-indicator").style.display = "none";
+        }
+
+        function kirim() {
+            let text = document.getElementById("message").value.trim();
+            if (!text) return;
+
+            tampilkan(text, "user");
+            document.getElementById("message").value = "";
+            
+            showTyping();
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    hideTyping();
+                    tampilkan(data.reply, "bot");
+                })
+                .catch(err => {
+                    hideTyping();
+                    tampilkan("Maaf, terjadi kesalahan. Silakan coba lagi.", "bot");
+                    console.error(err);
+                });
+        }
+
+        function kirimCepat(text) {
+            document.getElementById("message").value = text;
+            kirim();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                kirim();
+            }
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById("menu-dropdown");
+            menu.classList.toggle("show");
+        }
+
+        function clearChat() {
+            const box = document.getElementById("chatbox");
+            box.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3>Selamat Datang! 👋</h3>
+                    <p>Saya adalah asisten virtual UMKM. Silakan tanyakan tentang produk, harga, atau informasi lainnya.</p>
+                    <div class="quick-questions">
+                        <button class="quick-btn" onclick="kirimCepat('Produk apa saja yang tersedia?')">
+                            <i class="fas fa-box"></i> Lihat Produk
+                        </button>
+                        <button class="quick-btn" onclick="kirimCepat('Bagaimana cara order?')">
+                            <i class="fas fa-shopping-cart"></i> Cara Order
+                        </button>
+                        <button class="quick-btn" onclick="kirimCepat('Jam operasional?')">
+                            <i class="fas fa-clock"></i> Jam Buka
+                        </button>
+                    </div>
+                </div>
+            `;
+            messageCount = 0;
+            toggleMenu();
+        }
+
+        function downloadChat() {
+            const messages = document.querySelectorAll('.msg-user, .msg-bot');
+            let chatText = 'Percakapan Chatbot UMKM\n\n';
+            
+            messages.forEach(msg => {
+                const sender = msg.classList.contains('msg-user') ? 'Anda' : 'Bot';
+                const content = msg.querySelector('.message-content').textContent;
+                const time = msg.querySelector('.message-time').textContent;
+                chatText += `[${time}] ${sender}: ${content}\n`;
+            });
+            
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+            toggleMenu();
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menu-dropdown');
+            const menuBtn = document.querySelector('.btn-menu');
+            
+            if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // Focus input on load
+        window.addEventListener('load', () => {
+            document.getElementById('message').focus();
+        });
+    </script>
+</body>
+
+</html>

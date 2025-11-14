@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin UMKM</title>
+    <link rel="stylesheet" href="/web/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <i class="fas fa-store"></i>
+                <h1>Dashboard Admin UMKM</h1>
+            </div>
+            <p class="subtitle">Kelola Produk & FAQ Chatbot</p>
+        </header>
+
+        <!-- PRODUK -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-box"></i>
+                    <h2>Data Produk</h2>
+                </div>
+                <button class="btn btn-refresh" onclick="loadProduk()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="produkTable"></table>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Nama Produk</label>
+                        <input id="p_nama" type="text" placeholder="Masukkan nama produk">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-money-bill-wave"></i> Harga</label>
+                        <input id="p_harga" type="number" placeholder="Masukkan harga">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-cubes"></i> Stok</label>
+                        <input id="p_stok" type="number" placeholder="Masukkan stok">
+                    </div>
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-align-left"></i> Deskripsi</label>
+                        <textarea id="p_desc" placeholder="Masukkan deskripsi produk"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="tambahProduk()">
+                    <i class="fas fa-plus"></i> Tambah Produk
+                </button>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-question-circle"></i>
+                    <h2>FAQ (Pertanyaan & Jawaban)</h2>
+                </div>
+                <button class="btn btn-refresh" onclick="loadFAQ()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="faqTable"></table>
+            </div>
+
+            <div class="form-section">
+                <h3><i class="fas fa-plus-circle"></i> Tambah FAQ Baru</h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-question"></i> Pertanyaan</label>
+                        <textarea id="f_q" placeholder="Masukkan pertanyaan"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-comment-dots"></i> Jawaban</label>
+                        <textarea id="f_a" placeholder="Masukkan jawaban"></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="tambahFAQ()">
+                    <i class="fas fa-plus"></i> Tambah FAQ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProduk();
+            loadFAQ();
+        });
+
+        function loadProduk() {
+            fetch("/admin/get")
+                .then(r => r.json())
+                .then(data => {
+                    let table = `<thead>
+                        <tr>
+                            <th><i class="fas fa-tag"></i> Nama</th>
+                            <th><i class="fas fa-money-bill-wave"></i> Harga</th>
+                            <th><i class="fas fa-cubes"></i> Stok</th>
+                            <th><i class="fas fa-align-left"></i> Deskripsi</th>
+                            <th><i class="fas fa-cog"></i> Aksi</th>
+                        </tr>
+                    </thead><tbody>`;
+
+                    if (data.produk && data.produk.length > 0) {
+                        data.produk.forEach((p, i) => {
+                            table += `
+                            <tr>
+                                <td data-label="Nama">${p.nama}</td>
+                                <td data-label="Harga">Rp ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+                                <td data-label="Stok">${p.stok}</td>
+                                <td data-label="Deskripsi">${p.deskripsi}</td>
+                                <td data-label="Aksi">
+                                    <button onclick="hapusProduk(${i})" class="btn btn-delete">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </td>
+                            </tr>`;
+                        });
+                    } else {
+                        table += `<tr><td colspan="5" class="no-data">Belum ada data produk</td></tr>`;
+                    }
+
+                    table += `</tbody>`;
+                    document.getElementById("produkTable").innerHTML = table;
+                })
+                .catch(err => {
+                    console.error('Error loading produk:', err);
+                    document.getElementById("produkTable").innerHTML = 
+                        '<tbody><tr><td colspan="5" class="error-data">Gagal memuat data</td></tr></tbody>';
+                });
+        }
+
+        function tambahProduk() {
+            const nama = document.getElementById("p_nama").value;
+            const harga = document.getElementById("p_harga").value;
+            const stok = document.getElementById("p_stok").value;
+            const deskripsi = document.getElementById("p_desc").value;
+
+            if (!nama || !harga || !stok || !deskripsi) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+
+            fetch("/admin/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    add_produk: { nama, harga, stok, deskripsi }
+                })
+            }).then(() => {
+                loadProduk();
+                // Clear form
+                document.getElementById("p_nama").value = '';
+                document.getElementById("p_harga").value = '';
+                document.getElementById("p_stok").value = '';
+                document.getElementById("p_desc").value = '';
+            });
+        }
+
+        function hapusProduk(i) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                fetch("/admin/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ delete_produk: i })
+                }).then(() => loadProduk());
+            }
+        }
+
+        function loadFAQ() {
+            fetch("/admin/get")
+                .then(r => r.json())
+                .then(data => {
+                    let table = `<thead>
+                        <tr>
+                            <th><i class="fas fa-question"></i> Pertanyaan</th>
+                            <th><i class="fas fa-comment-dots"></i> Jawaban</th>
+                            <th><i class="fas fa-cog"></i> Aksi</th>
+                        </tr>
+                    </thead><tbody>`;
+
+                    if (data.faq && data.faq.length > 0) {
+                        data.faq.forEach((f, i) => {
+                            table += `
+                            <tr>
+                                <td data-label="Pertanyaan">${f.q}</td>
+                                <td data-label="Jawaban">${f.a}</td>
+                                <td data-label="Aksi">
+                                    <button onclick="hapusFAQ(${i})" class="btn btn-delete">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                </td>
+                            </tr>`;
+                        });
+                    } else {
+                        table += `<tr><td colspan="3" class="no-data">Belum ada data FAQ</td></tr>`;
+                    }
+
+                    table += `</tbody>`;
+                    document.getElementById("faqTable").innerHTML = table;
+                })
+                .catch(err => {
+                    console.error('Error loading FAQ:', err);
+                    document.getElementById("faqTable").innerHTML = 
+                        '<tbody><tr><td colspan="3" class="error-data">Gagal memuat data</td></tr></tbody>';
+                });
+        }
+
+        function tambahFAQ() {
+            const q = document.getElementById("f_q").value;
+            const a = document.getElementById("f_a").value;
+
+            if (!q || !a) {
+                alert('Pertanyaan dan jawaban harus diisi!');
+                return;
+            }
+
+            fetch("/admin/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    add_faq: { q, a }
+                })
+            }).then(() => {
+                loadFAQ();
+                // Clear form
+                document.getElementById("f_q").value = '';
+                document.getElementById("f_a").value = '';
+            });
+        }
+
+        function hapusFAQ(i) {
+            if (confirm('Apakah Anda yakin ingin menghapus FAQ ini?')) {
+                fetch("/admin/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ delete_faq: i })
+                }).then(() => loadFAQ());
+            }
+        }
+    </script>
+</body>
+
+</html>

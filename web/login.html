@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Admin</title>
+</head>
+<body>
+
+<div id="card">
+    <h2>Login Admin</h2>
+
+    <input type="password" id="pw" placeholder="Masukkan password admin">
+    <button onclick="login()">Login</button>
+    <div id="error">Password salah!</div>
+</div>
+
+<script>
+function login() {
+    fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ password: document.getElementById("pw").value })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "ok") {
+            window.location.href = "/admin";
+        } else {
+            document.getElementById("error").style.display = "block";
+        }
+    });
+}
+</script>
+
+</body>
+</html>
