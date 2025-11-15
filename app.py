@@ -98,7 +98,7 @@ def add_product():
     data = load_json(PRODUK_FILE)
     arr = data.get("produk", [])
 
-    required = ["id", "nama", "kategori", "harga", "stok"]
+    required = ["id", "nama", "kategori", "harga", "stok", "deskripsi"]
     for r in required:
         if r not in body:
             return jsonify({"error": f"Field {r} dibutuhkan"}), 400
@@ -233,6 +233,35 @@ def admin():
 def send_web(path):
     return send_from_directory(str(WEB_DIR), path)
 
+# # ------------------------- Admin API -------------------------
+# @app.route("/admin/get", methods=["GET"])
+# def admin_get():
+#     if not session.get("admin_logged_in"):
+#         return jsonify({"error": "Unauthorized"}), 401
+
+#     return jsonify({
+#         "produk": load_json(PRODUK_FILE),
+#         "faq": load_json(FAQ_FILE)
+#     })
+
+
+# @app.route("/admin/save", methods=["POST"])
+# def admin_save():
+#     if not session.get("admin_logged_in"):
+#         return jsonify({"error": "Unauthorized"}), 401
+
+#     body = request.get_json()
+#     if not body:
+#         return jsonify({"error": "Body kosong"}), 400
+
+#     if "produk" in body:
+#         save_json(PRODUK_FILE, body["produk"])
+
+#     if "faq" in body:
+#         save_json(FAQ_FILE, body["faq"])
+
+#     return jsonify({"status": "success", "message": "Data berhasil disimpan"})
+
 
 # ------------------------- Run -------------------------
 if __name__ == '__main__':
@@ -242,3 +271,4 @@ if __name__ == '__main__':
         save_json(FAQ_FILE, {"faq": []})
 
     app.run(host='0.0.0.0', port=5000, debug=True)
+

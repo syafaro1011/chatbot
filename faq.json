@@ -7,6 +7,54 @@
     {
       "question": "lokasi toko",
       "answer": "Toko kami berlokasi di Jalan Mawar No.12."
+    },
+    {
+      "question": "metode pembayaran",
+      "answer": "Kami menerima pembayaran tunai, kartu kredit, dan e-wallet."
+    },
+    {
+      "question": "pengiriman",
+      "answer": "Kami menyediakan layanan pengiriman ke seluruh wilayah Indonesia."
+    },
+    {
+      "question": "retur barang",
+      "answer": "Barang dapat dikembalikan dalam waktu 7 hari setelah pembelian dengan syarat masih dalam kondisi asli."
+    },
+    {
+      "question": "diskon",
+      "answer": "Kami sering mengadakan promo dan diskon khusus pada hari-hari tertentu. Pantau terus media sosial kami untuk informasi terbaru."
+    },
+    {
+      "question": "cara pemesanan",
+      "answer": "Anda dapat memesan produk kami melalui website resmi atau menghubungi nomor layanan pelanggan kami."
+    },
+    {
+      "question": "kapan buka",
+      "answer": "buka pusas"
+    },
+    {
+      "question": "dimana lokasi",
+      "answer": "lokasi di jalan mawar no 12"     
+    },
+    {
+      "question": "bagaimana cara bayar",
+      "answer": "kami terima tunai, kartu kredit, e-wallet"
+    },
+    {
+      "question": "apakah ada diskon",
+      "answer": "ada, pantau terus media sosial kami"
+    },
+    {
+      "question": "cara pesan",
+      "answer": "pesan via website resmi atau hubungi layanan pelanggan kami"
+    },  
+    {
+      "question": "apakah bisa retur barang",
+      "answer": "bisa, dalam waktu 7 hari dengan syarat kondisi asli"
+    },
+    {
+      "question": "apakah ada layanan pengiriman",
+      "answer": "ada, ke seluruh wilayah Indonesia"
     }
   ]
 }

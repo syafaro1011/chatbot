@@ -2,259 +2,327 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Admin UMKM</title>
-    <link rel="stylesheet" href="/web/static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #fdc830 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .box {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #f7931e;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #f7931e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #fff5e6;
+            transition: background-color 0.3s ease;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 2px solid #fdc830;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #f7931e, #ff6b35);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc143c, #ff4757);
+            padding: 8px 20px;
+            font-size: 0.9em;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #ff4757, #dc143c);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .box {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <i class="fas fa-store"></i>
-                <h1>Dashboard Admin UMKM</h1>
-            </div>
-            <p class="subtitle">Kelola Produk & FAQ Chatbot</p>
-        </header>
 
-        <!-- PRODUK -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <i class="fas fa-box"></i>
-                    <h2>Data Produk</h2>
-                </div>
-                <button class="btn btn-refresh" onclick="loadProduk()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
+    <h1>🏪 Dashboard Admin UMKM</h1>
 
-            <div class="table-container">
-                <table id="produkTable"></table>
-            </div>
+    <!-- ==================== PRODUK ==================== -->
 
-            <div class="form-section">
-                <h3><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label><i class="fas fa-tag"></i> Nama Produk</label>
-                        <input id="p_nama" type="text" placeholder="Masukkan nama produk">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-money-bill-wave"></i> Harga</label>
-                        <input id="p_harga" type="number" placeholder="Masukkan harga">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-cubes"></i> Stok</label>
-                        <input id="p_stok" type="number" placeholder="Masukkan stok">
-                    </div>
-                    <div class="form-group full-width">
-                        <label><i class="fas fa-align-left"></i> Deskripsi</label>
-                        <textarea id="p_desc" placeholder="Masukkan deskripsi produk"></textarea>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="tambahProduk()">
-                    <i class="fas fa-plus"></i> Tambah Produk
-                </button>
-            </div>
-        </div>
+    <div class="box">
+        <h2>📦 Daftar Produk</h2>
+        <table id="produkTable">
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Deskripsi</th>
+                <th>Aksi</th>
+            </tr>
+        </table>
 
-        <!-- FAQ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <i class="fas fa-question-circle"></i>
-                    <h2>FAQ (Pertanyaan & Jawaban)</h2>
-                </div>
-                <button class="btn btn-refresh" onclick="loadFAQ()">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
+        <h3>➕ Tambah Produk</h3>
 
-            <div class="table-container">
-                <table id="faqTable"></table>
-            </div>
+        <input id="in_id" placeholder="ID Produk">
+        <input id="in_nama" placeholder="Nama Produk">
+        <input id="in_kategori" placeholder="Kategori">
+        <input id="in_harga" type="number" placeholder="Harga">
+        <input id="in_stok" type="number" placeholder="Stok">
+        <input id="in_deskripsi" placeholder="Deskripsi">
 
-            <div class="form-section">
-                <h3><i class="fas fa-plus-circle"></i> Tambah FAQ Baru</h3>
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label><i class="fas fa-question"></i> Pertanyaan</label>
-                        <textarea id="f_q" placeholder="Masukkan pertanyaan"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label><i class="fas fa-comment-dots"></i> Jawaban</label>
-                        <textarea id="f_a" placeholder="Masukkan jawaban"></textarea>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="tambahFAQ()">
-                    <i class="fas fa-plus"></i> Tambah FAQ
-                </button>
-            </div>
-        </div>
+        <button onclick="addProduk()">Tambah Produk</button>
+    </div>
+
+    <!-- ==================== FAQ ==================== -->
+
+    <div class="box">
+        <h2>❓ Daftar FAQ</h2>
+        <table id="faqTable">
+            <tr>
+                <th>Pertanyaan</th>
+                <th>Jawaban</th>
+            </tr>
+        </table>
+
+        <h3>➕ Tambah FAQ</h3>
+
+        <input id="in_tanya" placeholder="Pertanyaan">
+        <textarea id="in_jawab" placeholder="Jawaban"></textarea>
+
+        <button onclick="addFAQ()">Tambah FAQ</button>
     </div>
 
     <script>
-        // Load data on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadProduk();
-            loadFAQ();
-        });
-
+        // ==================== LOAD PRODUK LIST ====================
         function loadProduk() {
-            fetch("/admin/get")
-                .then(r => r.json())
+            fetch("/produk")
+                .then(res => res.json())
                 .then(data => {
-                    let table = `<thead>
-                        <tr>
-                            <th><i class="fas fa-tag"></i> Nama</th>
-                            <th><i class="fas fa-money-bill-wave"></i> Harga</th>
-                            <th><i class="fas fa-cubes"></i> Stok</th>
-                            <th><i class="fas fa-align-left"></i> Deskripsi</th>
-                            <th><i class="fas fa-cog"></i> Aksi</th>
-                        </tr>
-                    </thead><tbody>`;
+                    let table = document.getElementById("produkTable");
+                    table.innerHTML = `
+                <tr>
+                    <th>ID</th><th>Nama</th><th>Kategori</th>
+                    <th>Harga</th><th>Stok</th><th>Deskripsi</th><th>Aksi</th>
+                </tr>
+            `;
 
-                    if (data.produk && data.produk.length > 0) {
-                        data.produk.forEach((p, i) => {
-                            table += `
-                            <tr>
-                                <td data-label="Nama">${p.nama}</td>
-                                <td data-label="Harga">Rp ${parseInt(p.harga).toLocaleString('id-ID')}</td>
-                                <td data-label="Stok">${p.stok}</td>
-                                <td data-label="Deskripsi">${p.deskripsi}</td>
-                                <td data-label="Aksi">
-                                    <button onclick="hapusProduk(${i})" class="btn btn-delete">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </td>
-                            </tr>`;
-                        });
-                    } else {
-                        table += `<tr><td colspan="5" class="no-data">Belum ada data produk</td></tr>`;
-                    }
-
-                    table += `</tbody>`;
-                    document.getElementById("produkTable").innerHTML = table;
-                })
-                .catch(err => {
-                    console.error('Error loading produk:', err);
-                    document.getElementById("produkTable").innerHTML = 
-                        '<tbody><tr><td colspan="5" class="error-data">Gagal memuat data</td></tr></tbody>';
+                    data.forEach(p => {
+                        table.innerHTML += `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td>${p.nama}</td>
+                        <td>${p.kategori}</td>
+                        <td>${p.harga}</td>
+                        <td>${p.stok}</td>
+                        <td>${p.deskripsi}</td>
+                        <td>
+                            <button onclick="deleteProduk('${p.id}')" class="delete-btn">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+                    });
                 });
         }
 
-        function tambahProduk() {
-            const nama = document.getElementById("p_nama").value;
-            const harga = document.getElementById("p_harga").value;
-            const stok = document.getElementById("p_stok").value;
-            const deskripsi = document.getElementById("p_desc").value;
+        // ==================== TAMBAH PRODUK ====================
+        function addProduk() {
+            let body = {
+                id: document.getElementById("in_id").value,
+                nama: document.getElementById("in_nama").value,
+                kategori: document.getElementById("in_kategori").value,
+                harga: parseInt(document.getElementById("in_harga").value),
+                stok: parseInt(document.getElementById("in_stok").value),
+                deskripsi: document.getElementById("in_deskripsi").value
+            };
 
-            if (!nama || !harga || !stok || !deskripsi) {
-                alert('Semua field harus diisi!');
-                return;
-            }
-
-            fetch("/admin/save", {
+            fetch("/add_product", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    add_produk: { nama, harga, stok, deskripsi }
-                })
-            }).then(() => {
-                loadProduk();
-                // Clear form
-                document.getElementById("p_nama").value = '';
-                document.getElementById("p_harga").value = '';
-                document.getElementById("p_stok").value = '';
-                document.getElementById("p_desc").value = '';
-            });
+                body: JSON.stringify(body)
+            }).then(() => loadProduk());
         }
 
-        function hapusProduk(i) {
-            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                fetch("/admin/save", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ delete_produk: i })
-                }).then(() => loadProduk());
-            }
+        // ==================== HAPUS PRODUK ====================
+        function deleteProduk(id) {
+            fetch("/delete_product", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            }).then(() => loadProduk());
         }
 
+        // ==================== LOAD FAQ ====================
         function loadFAQ() {
-            fetch("/admin/get")
-                .then(r => r.json())
+            fetch("/faq")
+                .then(res => res.json())
                 .then(data => {
-                    let table = `<thead>
-                        <tr>
-                            <th><i class="fas fa-question"></i> Pertanyaan</th>
-                            <th><i class="fas fa-comment-dots"></i> Jawaban</th>
-                            <th><i class="fas fa-cog"></i> Aksi</th>
-                        </tr>
-                    </thead><tbody>`;
+                    let table = document.getElementById("faqTable");
+                    table.innerHTML = `
+                <tr><th>Pertanyaan</th><th>Jawaban</th></tr>
+            `;
 
-                    if (data.faq && data.faq.length > 0) {
-                        data.faq.forEach((f, i) => {
-                            table += `
-                            <tr>
-                                <td data-label="Pertanyaan">${f.q}</td>
-                                <td data-label="Jawaban">${f.a}</td>
-                                <td data-label="Aksi">
-                                    <button onclick="hapusFAQ(${i})" class="btn btn-delete">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </td>
-                            </tr>`;
-                        });
-                    } else {
-                        table += `<tr><td colspan="3" class="no-data">Belum ada data FAQ</td></tr>`;
-                    }
-
-                    table += `</tbody>`;
-                    document.getElementById("faqTable").innerHTML = table;
-                })
-                .catch(err => {
-                    console.error('Error loading FAQ:', err);
-                    document.getElementById("faqTable").innerHTML = 
-                        '<tbody><tr><td colspan="3" class="error-data">Gagal memuat data</td></tr></tbody>';
+                    data.forEach(f => {
+                        table.innerHTML += `
+                    <tr>
+                        <td>${f.question}</td>
+                        <td>${f.answer}</td>
+                    </tr>
+                `;
+                    });
                 });
         }
 
-        function tambahFAQ() {
-            const q = document.getElementById("f_q").value;
-            const a = document.getElementById("f_a").value;
+        // ==================== TAMBAH FAQ ====================
+        function addFAQ() {
+            let body = {
+                question: document.getElementById("in_tanya").value,
+                answer: document.getElementById("in_jawab").value
+            };
 
-            if (!q || !a) {
-                alert('Pertanyaan dan jawaban harus diisi!');
-                return;
-            }
-
-            fetch("/admin/save", {
+            fetch("/add_faq", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    add_faq: { q, a }
-                })
-            }).then(() => {
-                loadFAQ();
-                // Clear form
-                document.getElementById("f_q").value = '';
-                document.getElementById("f_a").value = '';
-            });
+                body: JSON.stringify(body)
+            }).then(() => loadFAQ());
         }
 
-        function hapusFAQ(i) {
-            if (confirm('Apakah Anda yakin ingin menghapus FAQ ini?')) {
-                fetch("/admin/save", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ delete_faq: i })
-                }).then(() => loadFAQ());
-            }
-        }
+        // ==================== AUTO LOAD ====================
+        loadProduk();
+        loadFAQ();
     </script>
+
 </body>
 
 </html>
