@@ -8,8 +8,8 @@ WEB_DIR = BASE_DIR / "web"
 
 app = Flask(__name__, static_folder=str(WEB_DIR), template_folder=str(WEB_DIR))
 
-app.secret_key = "admin123"      # session key
-ADMIN_PASSWORD = "12345"         # password login admin
+app.secret_key = "admin123"      
+ADMIN_PASSWORD = "12345"         
 
 PRODUK_FILE = BASE_DIR / "produk.json"
 FAQ_FILE = BASE_DIR / "faq.json"
@@ -27,6 +27,9 @@ def save_json(path, data):
 
 def require_admin():
     return "admin" in session
+
+def is_learning():
+    return session.get("learning") == True
 
 # ------------------------- LOGIN -------------------------
 @app.route("/login", methods=["GET", "POST"])
@@ -180,7 +183,30 @@ def chat():
 
     msg = message.lower()
 
-    # Intent detection
+    # ---------------------- MODE LEARNING ----------------------
+    if session.get("learning") == True:
+        answer = message.strip()
+        question = session.get("last_question")
+
+        if question:
+            data = load_json(FAQ_FILE)
+            arr = data.get("faq", [])
+
+            arr.append({
+                "question": question.lower(),
+                "answer": answer
+            })
+
+            save_json(FAQ_FILE, {"faq": arr})
+
+        # reset mode belajar
+        session["learning"] = False
+        session["last_question"] = None
+
+        return jsonify({"reply": "Terima kasih! Saya sudah belajar 😊"})
+
+
+    # ---------------------- INTENT DETECTION ----------------------
     if "harga" in msg:
         data = load_json(PRODUK_FILE)
         for p in data.get("produk", []):
@@ -188,17 +214,19 @@ def chat():
                 return jsonify({"reply": f"Harga {p['nama']} adalah Rp {p['harga']}"})
         return jsonify({"reply": "Produk apa yang ingin Anda cek harganya?"})
 
-    if "stok" in msg or "ready" in msg or "tersedia" in msg:
+    if "stok" in msg or "ready" in msg:
         data = load_json(PRODUK_FILE)
         for p in data.get("produk", []):
             if p["nama"].lower() in msg or p.get("id", "").lower() in msg:
                 return jsonify({"reply": f"Stok {p['nama']} tersedia {p['stok']} pcs."})
         return jsonify({"reply": "Produk apa yang ingin Anda cek stoknya?"})
 
-    if "produk" in msg or "daftar" in msg or "list" in msg:
+    if "produk" in msg or "daftar" in msg or "list" in msg or "tersedia" in msg:
         data = load_json(PRODUK_FILE)
-        daftar = "\n".join([f"- {p['nama']} Rp {p['harga']} (stok: {p['stok']})"
-                            for p in data.get("produk", [])])
+        daftar = "\n".join([
+            f"- {p['nama']} Rp {p['harga']} (stok: {p['stok']})"
+            for p in data.get("produk", [])
+        ])
         return jsonify({"reply": f"Daftar produk kami:\n{daftar}"})
 
     if "deskripsi" in msg or "jelaskan" in msg:
@@ -208,14 +236,20 @@ def chat():
                 return jsonify({"reply": p.get("deskripsi", "Tidak ada deskripsi")})
         return jsonify({"reply": "Deskripsi produk apa yang ingin Anda tahu?"})
 
-    # FAQ match
+
+    # ---------------------- FAQ MATCH ----------------------
     faq = load_json(FAQ_FILE)
     for f in faq.get("faq", []):
         if f.get("question", "").lower() in msg:
             return jsonify({"reply": f.get("answer")})
 
-    # fallback learning
+
+    # ---------------------- FALLBACK (LEARNING MODE) ----------------------
+    session["learning"] = True
+    session["last_question"] = msg
     return jsonify({"reply": "Maaf, saya belum tahu jawabannya, jadi jawabannya apa?"})
+
+
 
 
 # ------------------------- Web Routes -------------------------
@@ -233,34 +267,6 @@ def admin():
 def send_web(path):
     return send_from_directory(str(WEB_DIR), path)
 
-# # ------------------------- Admin API -------------------------
-# @app.route("/admin/get", methods=["GET"])
-# def admin_get():
-#     if not session.get("admin_logged_in"):
-#         return jsonify({"error": "Unauthorized"}), 401
-
-#     return jsonify({
-#         "produk": load_json(PRODUK_FILE),
-#         "faq": load_json(FAQ_FILE)
-#     })
-
-
-# @app.route("/admin/save", methods=["POST"])
-# def admin_save():
-#     if not session.get("admin_logged_in"):
-#         return jsonify({"error": "Unauthorized"}), 401
-
-#     body = request.get_json()
-#     if not body:
-#         return jsonify({"error": "Body kosong"}), 400
-
-#     if "produk" in body:
-#         save_json(PRODUK_FILE, body["produk"])
-
-#     if "faq" in body:
-#         save_json(FAQ_FILE, body["faq"])
-
-#     return jsonify({"status": "success", "message": "Data berhasil disimpan"})
 
 
 # ------------------------- Run -------------------------

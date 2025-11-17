@@ -15,6 +15,78 @@
       "harga": 10000,
       "stok": 12,
       "deskripsi": "Keripik pedas dengan level pedas pilihan."
+    },
+    {
+      "id": "MIN001",
+      "nama": "Teh Botol",
+      "kategori": "Minuman",
+      "harga": 5000,
+      "stok": 50,
+      "deskripsi": "Teh manis dalam botol siap minum."
+    },
+    {
+      "id": "MIN002",
+      "nama": "Air Mineral",
+      "kategori": "Minuman",
+      "harga": 3000,
+      "stok": 100,
+      "deskripsi": "Air mineral segar dalam kemasan botol."
+    },
+    {
+      "id": "SNK001",
+      "nama": "Cokelat Batangan",
+      "kategori": "Camilan",
+      "harga": 15000,
+      "stok": 30,
+      "deskripsi": "Cokelat batangan dengan rasa susu yang lezat."
+    },
+    {
+      "id": "SNK002",
+      "nama": "Kacang Goreng",
+      "kategori": "Camilan",
+      "harga": 12000,
+      "stok": 20,
+      "deskripsi": "Kacang goreng renyah dengan bumbu spesial."
+    },
+    {
+      "id": "RMT001",
+      "nama": "Nasi Goreng Spesial",
+      "kategori": "Makanan Berat",
+      "harga": 25000,
+      "stok": 15,
+      "deskripsi": "Nasi goreng dengan tambahan telur, ayam, dan sayuran."
+    },
+    {
+      "id": "RMT002",
+      "nama": "Mie Ayam",
+      "kategori": "Makanan Berat",
+      "harga": 20000,
+      "stok": 18,
+      "deskripsi": "Mie ayam dengan kuah kaldu yang gurih."
+    },
+    {
+      "id": "RMT003",
+      "nama": "Sate Ayam",
+      "kategori": "Makanan Berat",
+      "harga": 30000,
+      "stok": 10,
+      "deskripsi": "Sate ayam dengan bumbu kacang khas."
+    },
+    {
+      "id": "DSS001",
+      "nama": "Es Krim Cokelat",
+      "kategori": "Dessert",
+      "harga": 15000,
+      "stok": 22,
+      "deskripsi": "Es krim rasa cokelat yang lembut dan creamy."
+    },
+    {
+      "id": "ndsiaui",
+      "nama": "Es Teh Manis",
+      "kategori": "Minuman",
+      "harga": 5000,
+      "stok": 10,
+      "deskripsi": "Teh manis segar"
     }
   ]
 }

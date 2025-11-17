@@ -543,6 +543,7 @@ body.chatbot-page {
 
 .msg-bot {
     align-self: flex-start;
+    white-space: pre-line;
 }
 
 .message-avatar {
@@ -575,6 +576,7 @@ body.chatbot-page {
 
 .msg-bot .message-content {
     border-bottom-left-radius: 5px;
+    white-space: pre-line;
 }
 
 .message-time {
